@@ -2,11 +2,13 @@ package com.christhoper.curso.springboot.jpa.springboot_jpa;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.christhoper.curso.springboot.jpa.springboot_jpa.entities.Person;
 import com.christhoper.curso.springboot.jpa.springboot_jpa.repositories.PersonRepository;
@@ -23,9 +25,32 @@ public class SpringbootJpaApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		findOne();
+		//findOne();
+		create();
 	}
 
+	@Transactional
+	public void create(){
+
+		Scanner scanner = new Scanner(System.in);
+
+		System.out.println("Ingrese el nombre:");
+		String name = scanner.next();
+		System.out.println("Ingrese el apellido:");
+		String lastname = scanner.next();
+		System.out.println("Ingrese el lenguaje de programacion:");
+		String programmingLanguaje = scanner.next();
+		scanner.close();
+
+		Person person = new Person(null, name, lastname, programmingLanguaje);
+
+		Person personNew = repository.save(person);
+		System.out.println(personNew);
+
+		repository.findById(personNew.getId()).ifPresent(System.out::println);
+	}
+
+	@Transactional(readOnly = true)
 	public void findOne(){
 		// Person person = null;
 		// Optional<Person> optionalPerson = repository.findById(8L);
