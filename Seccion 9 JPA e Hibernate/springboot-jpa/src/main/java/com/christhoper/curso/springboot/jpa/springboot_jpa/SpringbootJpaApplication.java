@@ -26,7 +26,74 @@ public class SpringbootJpaApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		//findOne();
-		create();
+		//create();
+		//update();
+		//delete();
+		delete2();
+	}
+
+	@Transactional
+	public void delete(){
+
+		repository.findAll().forEach(System.out::println);
+
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el id a eliminar:");
+		Long id = scanner.nextLong();
+		repository.deleteById(id);
+
+		repository.findAll().forEach(System.out::println);
+
+		scanner.close();
+	}
+
+	@Transactional
+	public void delete2(){
+
+		repository.findAll().forEach(System.out::println);
+
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el id a eliminar:");
+		Long id = scanner.nextLong();
+
+		Optional<Person> optionalPerson = repository.findById(id);
+
+		optionalPerson.ifPresentOrElse(
+		repository::delete, 
+		() -> System.out.println("Lo sentimos no existe la persona con ese id!"));
+
+		repository.findAll().forEach(System.out::println);
+
+		scanner.close();
+	}
+
+	@Transactional
+	public void update(){
+
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el id de la persona:");
+		Long id = scanner.nextLong();
+
+		Optional<Person> optionalPerson = repository.findById(id);
+
+		//optionalPerson.ifPresent(person -> {
+		if (optionalPerson.isPresent()) {
+			Person personDB = optionalPerson.orElseThrow();
+
+			System.out.println(personDB);
+			System.out.println("Ingrese el lenguaje de programacion:");
+			String programmingLanguaje = scanner.next();
+
+			personDB.setProgrammingLanguage(programmingLanguaje);
+			Person personUpdate = repository.save(personDB);
+
+			System.out.println(personUpdate);
+		} else {
+			System.out.println("El usuario no esta presente! no existe!");
+		}
+		//});
+
+		scanner.close();
 	}
 
 	@Transactional
