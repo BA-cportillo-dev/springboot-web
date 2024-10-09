@@ -29,7 +29,27 @@ public class SpringbootJpaApplication implements CommandLineRunner {
 		//create();
 		//update();
 		//delete();
-		delete2();
+		//delete2();
+		personalizedQueries();
+	}
+
+	@Transactional(readOnly = true)
+	public void personalizedQueries(){
+
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("===================== consulta solo el nombre por el id =====================");
+		System.out.println("Ingrese el id a consultar:");
+		Long id = scanner.nextLong();
+		scanner.close();
+
+		String name = repository.getNameById(id);
+		System.out.println(name);
+
+		Long idDb = repository.getIdById(id);
+		System.out.println(idDb);
+
+		String fullName = repository.getFullNameById(id);
+		System.out.println(fullName);
 	}
 
 	@Transactional
