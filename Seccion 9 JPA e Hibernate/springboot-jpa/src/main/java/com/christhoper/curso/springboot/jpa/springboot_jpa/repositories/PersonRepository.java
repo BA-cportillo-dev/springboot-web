@@ -6,9 +6,28 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import com.christhoper.curso.springboot.jpa.springboot_jpa.dto.PersonDto;
 import com.christhoper.curso.springboot.jpa.springboot_jpa.entities.Person;
 
 public interface PersonRepository extends CrudRepository<Person, Long> {
+
+    @Query("select p.name from Person p")
+    List<String> findAllNames();
+    
+    @Query("select distinct(p.name) from Person p")
+    List<String> findAllNamesDistinct();
+    
+    @Query("select distinct(p.programmingLanguage) from Person p")
+    List<String> findAllprogrammingLanguageDistinct();
+    
+    @Query("select count(distinct(p.programmingLanguage)) from Person p")
+    Long findAllprogrammingLanguageDistinctCount();
+
+    @Query("select new com.christhoper.curso.springboot.jpa.springboot_jpa.dto.PersonDto(p.name, p.lastname) from Person p")
+    List<PersonDto> findAllPersonDto();
+
+    @Query("select new Person(p.name, p.lastname) from Person p")
+    List<Person> findAllObjectPersonPersonalized();
 
     @Query("select p.name from Person p where p.id=?1")
     String getNameById(Long id);
@@ -40,4 +59,6 @@ public interface PersonRepository extends CrudRepository<Person, Long> {
     @Query("select p.name, p.programmingLanguage from Person p")
     List<Object[]> obtenerPersonData();
 
+    @Query("select p, p.programmingLanguage from Person p")
+    List<Object[]> findAllMixPerson();
 }
