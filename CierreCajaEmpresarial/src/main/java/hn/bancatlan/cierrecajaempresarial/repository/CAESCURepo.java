@@ -9,6 +9,8 @@ import hn.bancatlan.cierrecajaempresarial.entity.CAESCU;
 import hn.bancatlan.cierrecajaempresarial.entity.indexes.ICAESCU;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,7 +21,7 @@ import org.springframework.stereotype.Repository;
 public interface CAESCURepo extends JpaRepository<CAESCU, ICAESCU>{
     
     @Query("SELECT c FROM CAESCU c WHERE c.EMPNUM = :numEmpresa AND c.SERNUM = :numServicio AND c.MONCOD = :moneda")
-    public CAESCU getSucursal(@Param("numEmpresa") BigDecimal numEmpresa,
+    public Optional<CAESCU> getSucursal(@Param("numEmpresa") BigDecimal numEmpresa,
             @Param("numServicio") BigDecimal numServicio,
             @Param("moneda") String moneda);
 

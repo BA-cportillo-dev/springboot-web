@@ -86,6 +86,9 @@ public class CierreCajaEmpresarialService {
     @Autowired
     private UtilidadesGenerales utilidadesGenerales;
 
+    @Autowired
+    ProcesarMonedaService procesarMonedaService;
+
     //Lógica del Cierre:
     @Transactional
     @Modifying
@@ -139,7 +142,7 @@ public class CierreCajaEmpresarialService {
         ///2 Setea variables &Esp01 - &Esp05 = 'S'
         String Esp01 = "S"; // &Esp01 1: Escribir en el audit
         String Esp02 = "N"; //&Esp02 2: Escribir en el histórico
-        String Esp03 = "S"; //&Esp03 3: Eliminar el diario
+        String Esp03 = "N"; //&Esp03 3: Eliminar el diario
         String codigoAplicacion = "";
         String codigoMoneda = "";
 
@@ -253,7 +256,7 @@ public class CierreCajaEmpresarialService {
                 }
                 logger.info(String.format("Listo para recorrer la moneda, monto total para moneda %s: %s", moneda.getMONCOD(), totalRecaudadoMoneda));
                 ///14 Inicia procesarMoneda: este flujo lo tomaremos a parte.
-                
+                procesarMonedaService.procesarMoneda(peticionBaseCierre, codigoMoneda, regsDiarios);
                 /// ///Se trabajará a parte
                 ///15 recorre la tabla CAECCC por CIENUM = &CieNum and CMOCOD = &MonCod
                 Optional<CAECCC> cierreCuentaContable = caecccRepo.findByCIENUMAndCMOCOD(numeroCierre, codigoMoneda);
@@ -300,7 +303,8 @@ public class CierreCajaEmpresarialService {
         //////////////PCaECieNF END/////////////////////////|
 
         //Obtener cuentas
-        CTRLCTA cuentas = ctrlctaRepo.getCuentasCierre(new BigDecimal(peticionBaseCierre.getCodigoAplicacion()), BigDecimal.ONE);
+        Optional<CTRLCTA> cuentasrepo = ctrlctaRepo.getCuentasCierre(new BigDecimal(peticionBaseCierre.getCodigoAplicacion()), BigDecimal.ONE);
+        CTRLCTA cuentas = cuentasrepo.get();
 
         String trades = cuentas.getDescripcionRecaudo().trim() + " " + gestionCierre.formatoFecha(peticionBaseCierre.getPeticionEspecificaCierre().getFechaCierre());
         logger.info("trades: " + trades);
